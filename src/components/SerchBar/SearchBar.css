@@ -1,0 +1,15 @@
+.search-bar-container {
+    margin: 16px 0px 16px 24px;
+    display: flex;
+    align-items: center;
+}
+.search-bar-container * {
+    margin-right: 8px;
+}
+
+.search-bar {
+    width: 75%;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #777;
+}
