@@ -3,3 +3,10 @@ ul {
     margin-left: 24px;
     font-size: 13px;
 }
+
+.no-items {
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    margin-top: 12px;
+}

@@ -9,13 +9,14 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      list: list,
       filterText: '',
       isMasterChecked: false,
       isMasterToggled: false,
     };
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleMasterCheckBoxChange = this.handleMasterCheckBoxChange.bind(this);
-    this.handleChildSelection = this.handleChildSelection.bind(this);
+    this.handleChildSelect = this.handleChildSelect.bind(this);
   }
 
   handleFilterTextChange(filterText) {
@@ -32,8 +33,12 @@ export default class App extends React.Component {
     });
   }
 
-  handleChildSelection() {
-
+  handleChildSelect(list) {
+    this.setState({
+      list,
+      isMasterChecked: list.every(child => child.checked),
+      isMasterToggled: false
+    })
   }
 
   render() {
@@ -47,10 +52,9 @@ export default class App extends React.Component {
         <hr></hr>
         <div className='tree-container'>
           <TreeWrapper
-            list={list}
             parent={ null}
             {...this.state}
-            onSelectionChange={this.handleChildSelection}
+            onChildSelect={this.handleChildSelect}
           />
         </div>
       </div>
