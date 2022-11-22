@@ -44,9 +44,10 @@ export default class App extends React.Component {
   }
 
   handleChildDelete(list) {
+    const existingList = list.filter(child => !child.deleted)
     this.setState({
       list,
-      isMasterChecked: list.filter(child => !child.deleted).every(child => child.checked),
+      isMasterChecked: existingList.length > 0 && existingList.every(child => child.checked),
       isMasterToggled: false
     })
   }
