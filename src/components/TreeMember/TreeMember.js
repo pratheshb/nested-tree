@@ -4,39 +4,88 @@ import './TreeMember.css';
 import { BsChevronDown } from "react-icons/bs";
 import { MdDragIndicator, MdDelete } from "react-icons/md";
 
-let isMemberSelected = false;
 export default class TreeMember extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            member: props.member,
             isEditing: false,
             isMouseOver: false,
             index: props.index,
         };
-        this.onSelectMember = this.onSelectMember.bind(this);
         this.onStartEditing = this.onStartEditing.bind(this);
         this.onEndEditing = this.onEndEditing.bind(this);
-        this.onEditMember = this.onEditMember.bind(this);
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onSelectMember = this.onSelectMember.bind(this);
         this.onDeleteMember = this.onDeleteMember.bind(this);
+        this.onEditMember = this.onEditMember.bind(this);
         this.handleChildSelect = this.handleChildSelect.bind(this);
+        this.handleChildDelete = this.handleChildDelete.bind(this);
+        this.handleChildEdit = this.handleChildEdit.bind(this);
     }
 
     onSelectMember(e) {
-        this.props.onChildSelect(this.state.index, e.target.checked, true);
+        const children = [...this.props.member.children]
+        const member = {
+            ...this.props.member,
+            checked: e.target.checked,
+            children: [...children]
+        }
+        const selectChildren = function (member) {
+            for (let child of member.children) {
+                child.checked = e.target.checked;
+                selectChildren(child);
+            }
+        }
+        selectChildren(member);
+        this.props.onChildSelect(this.state.index, member);
     }
 
     handleChildSelect(children) {
-        const {member} = this.props;
-        member.checked = children.every(child => child.checked);
-        member.children = children;
-        this.props.onChildSelect(this.state.index, member.checked);  
+        const member = {
+            ...this.props.member,
+            checked: children.every(child => child.checked),
+            children: [...children]
+        }
+        this.props.onChildSelect(this.state.index, member);
     }
 
+    onDeleteMember() {
+        const member = {
+            ...this.props.member,
+            deleted: true
+        };
+        this.props.onChildDelete(this.state.index, member);
+    }
+
+    handleChildDelete(children) {
+        const member = {
+            ...this.props.member,
+            checked: children.filter(child => !child.deleted).every(child => child.checked),
+            children: [...children]
+        }
+        this.props.onChildDelete(this.state.index, member);
+    }
+
+    onEditMember(e) {
+        const member = {
+            ...this.props.member,
+            name: e.target.value
+        };
+        this.props.onChildEdit(this.state.index, member);
+    }
+
+    handleChildEdit(children) {
+        const member = {
+            ...this.props.member,
+            children: [...children]
+        };
+        this.props.onChildEdit(this.state.index, member);
+    }
+
+
     onStartEditing() {
-        if(this.props.filterText) {
+        if (this.props.filterText) {
             alert('filter applied. please clear filter and try editing')
             return;
         }
@@ -52,45 +101,25 @@ export default class TreeMember extends React.Component {
     }
 
     onMouseEnter() {
-        this.setState({isMouseOver: true});
+        this.setState({ isMouseOver: true });
     }
 
     onMouseLeave() {
-        this.setState({isMouseOver: false});
-    }
-
-    onEditMember(e) {
-        this.setState(state => {
-            const {member} = state;
-            member.name = e.target.value;
-            return ({
-                member
-            });
-        });
-    }
-
-    onDeleteMember() {
-        this.props.onMemberDelete(this.state.index);
+        this.setState({ isMouseOver: false });
     }
 
     render() {
+        const { member, filterText, isMasterToggled, isMasterChecked } = this.props;
+        let memberWrapper = member.name;
         let nestedMember = null;
         let visibility = 'hidden';
-        let { member, filterText, isMasterToggled, isMasterChecked } = this.props;
-        // const {member} = this.state;
+        let deleteIcon = null;
 
         if (member.checked === undefined) {
             member.checked = false;
         }
 
-        if(isMemberSelected) {
-            isMasterChecked = member.checked;
-            isMasterToggled = true;
-        }
-
-        isMemberSelected = false;
-
-        if(isMasterToggled) {
+        if (isMasterToggled) {
             member.checked = isMasterChecked;
         }
 
@@ -98,26 +127,26 @@ export default class TreeMember extends React.Component {
             visibility = 'visible';
             nestedMember = <TreeWrapper
                 list={member.children}
-                parent = {member}
+                parent={member}
                 filterText={filterText}
-                isMasterChecked = {isMasterChecked}
-                isMasterToggled = {isMasterToggled}
-                onChildSelect = {this.handleChildSelect}
+                isMasterChecked={isMasterChecked}
+                isMasterToggled={isMasterToggled}
+                onChildSelect={this.handleChildSelect}
+                onChildDelete={this.handleChildDelete}
+                onChildEdit={this.handleChildEdit}
             />
         }
-
-        let memberName = member.name;
-        if(this.state.isEditing) {
-            memberName = <input 
-            type="text" 
-            autoFocus 
-            onChange={this.onEditMember} 
-            onBlur={this.onEndEditing} 
-            value={memberName}>
+        if (this.state.isEditing) {
+            memberWrapper = <input
+                type="text"
+                autoFocus
+                onChange={this.onEditMember}
+                onBlur={this.onEndEditing}
+                value={member.name}>
             </input>
         }
-        let deleteIcon = null;
-        if(this.state.isMouseOver) {
+
+        if (this.state.isMouseOver) {
             deleteIcon = <MdDelete title="Delete" onClick={this.onDeleteMember}></MdDelete>;
         }
         return (
@@ -127,7 +156,7 @@ export default class TreeMember extends React.Component {
                         <BsChevronDown style={{ visibility }} className='icon'></BsChevronDown>
                         <input type="checkbox" onChange={this.onSelectMember} checked={member.checked}></input>
                         <MdDragIndicator></MdDragIndicator>
-                        <span onClick={this.onStartEditing}>{memberName}</span>
+                        <span onClick={this.onStartEditing}>{memberWrapper}</span>
                     </div>
                     {deleteIcon}
                 </div>

@@ -17,6 +17,8 @@ export default class App extends React.Component {
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleMasterCheckBoxChange = this.handleMasterCheckBoxChange.bind(this);
     this.handleChildSelect = this.handleChildSelect.bind(this);
+    this.handleChildDelete = this.handleChildDelete.bind(this);
+    this.handleChildEdit = this.handleChildEdit.bind(this);
   }
 
   handleFilterTextChange(filterText) {
@@ -41,6 +43,21 @@ export default class App extends React.Component {
     })
   }
 
+  handleChildDelete(list) {
+    this.setState({
+      list,
+      isMasterChecked: list.filter(child => !child.deleted).every(child => child.checked),
+      isMasterToggled: false
+    })
+  }
+
+  handleChildEdit(list) {
+    this.setState({
+      list,
+      isMasterToggled: false
+    })
+  }
+
   render() {
     return (
       <div className="container">
@@ -52,9 +69,11 @@ export default class App extends React.Component {
         <hr></hr>
         <div className='tree-container'>
           <TreeWrapper
-            parent={ null}
+            parent={null}
             {...this.state}
             onChildSelect={this.handleChildSelect}
+            onChildDelete={this.handleChildDelete}
+            onChildEdit={this.handleChildEdit}
           />
         </div>
       </div>
@@ -66,14 +85,25 @@ export default class App extends React.Component {
 const list = [
   {
     name: 'Country', children: [
-      { name: 'India', children: [
-        {
-          name: 'Region', children: [
-            { name: 'Chennai', children: []},
-            { name: 'Bangalore', children: []},
-          ]
-        }
-      ] },
+      {
+        name: 'India', children: [
+          {
+            name: 'Region', children: [
+              {
+                name: 'Chennai', children: [
+                  {
+                    name: 'Area', children: [
+                      { name: 'OMR', children: [] },
+                      { name: 'ECR', children: [] },
+                    ]
+                  }
+                ]
+              },
+              { name: 'Bangalore', children: [] },
+            ]
+          }
+        ]
+      },
       { name: 'China', children: [] },
       { name: 'Vietnam', children: [] },
     ]

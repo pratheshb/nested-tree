@@ -5,15 +5,15 @@ import { BsChevronDown } from "react-icons/bs";
 export default class SearchBar extends React.Component {
     constructor(props) {
         super(props);
-        this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-        this.handleMasterCheckBoxChange = this.handleMasterCheckBoxChange.bind(this);
+        this.onFilterTextChange = this.onFilterTextChange.bind(this);
+        this.onMasterCheckBoxChange = this.onMasterCheckBoxChange.bind(this);
     }
 
-    handleFilterTextChange(e) {
+    onFilterTextChange(e) {
         this.props.onFilterTextChange(e.target.value);
     }
 
-    handleMasterCheckBoxChange(e) {
+    onMasterCheckBoxChange(e) {
         this.props.onMasterCheckBoxChange(e.target.checked);
     }
 
@@ -21,8 +21,8 @@ export default class SearchBar extends React.Component {
         return (
             <div className="search-bar-container">
                 <BsChevronDown className='icon'></BsChevronDown>
-                <input type='checkbox' className='master-checkbox' onChange={this.handleMasterCheckBoxChange} checked={this.props.isMasterChecked}></input>
-                <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.handleFilterTextChange}></input>
+                <input type='checkbox' className='master-checkbox' onChange={this.onMasterCheckBoxChange} checked={this.props.isMasterChecked}></input>
+                <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.onFilterTextChange}></input>
             </div>
         )
     }

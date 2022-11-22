@@ -4,42 +4,37 @@ import './TreeWrapper.css';
 export default class TreeWrapper extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            list: props.list
-        };
         this.handleChildSelect = this.handleChildSelect.bind(this);
-        this.handleDeleteMember = this.handleDeleteMember.bind(this);
+        this.handleChildDelete = this.handleChildDelete.bind(this);
+        this.handleChildEdit = this.handleChildEdit.bind(this);
     }
 
-
-    handleChildSelect(index, checked, isInitial) {
-        const {list} = this.props;
-        list[index].checked = checked;
-        const selectChildren = function(member) {
-            for(let child of member.children) {
-                child.checked = checked;
-                selectChildren(child);
-            }
-        }
-        if(isInitial) {
-            selectChildren(list[index]);
-        }
-        this.props.onChildSelect(list, checked);
+    handleChildSelect(index, member) {
+        const list = [
+            ...this.props.list
+        ]
+        list[index] = member;
+        this.props.onChildSelect(list);
     }
 
-    handleDeleteMember(index) {
-        this.setState(state => {
-            const list = state.list;
-            list[index].isDeleted = true;
-            return ({
-                list: list
-            });
-        })
+    handleChildDelete(index, member) {
+        const list = [
+            ...this.props.list
+        ]
+        list[index] = member;
+        this.props.onChildDelete(list);
+    }
+
+    handleChildEdit(index, member) {
+        const list = [
+            ...this.props.list
+        ]
+        list[index] = member;
+        this.props.onChildEdit(list);
     }
 
     render() {
-        let { filterText, parent, isMasterChecked, isMasterToggled } = this.props;
-        const { list } = this.state;
+        const { list, filterText, parent, isMasterChecked, isMasterToggled } = this.props;
         const li = [];
         let noResults = null;
 
@@ -72,7 +67,7 @@ export default class TreeWrapper extends React.Component {
 
         list.forEach((member, index) => {
             member.parent = parent;
-            if (member.isDeleted) {
+            if (member.deleted) {
                 return;
             }
             if (isMemberAvailable(member) || isParentAvailable(member) || isChildrenAvailable(member)) {
@@ -84,21 +79,22 @@ export default class TreeWrapper extends React.Component {
                         filterText={filterText}
                         isMasterChecked={isMasterChecked}
                         isMasterToggled={isMasterToggled}
-                        onMemberDelete={this.handleDeleteMember}
                         onChildSelect={this.handleChildSelect}
+                        onChildDelete={this.handleChildDelete}
+                        onChildEdit={this.handleChildEdit}
                     />
                 );
             }
         });
-        if(parent === null && li.length === 0) {
+        if (parent === null && li.length === 0) {
             noResults = <div className='no-items'>No items found!</div>
         }
         return (
             <>
-            <ul>
-                {li}
-            </ul>
-            {noResults}
+                <ul>
+                    {li}
+                </ul>
+                {noResults}
             </>
         );
     }
