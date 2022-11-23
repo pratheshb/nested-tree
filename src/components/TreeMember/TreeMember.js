@@ -25,19 +25,11 @@ export default class TreeMember extends React.Component {
     }
 
     onSelectMember(e) {
-        const children = [...this.props.member.children]
         const member = {
             ...this.props.member,
             checked: e.target.checked,
-            children: [...children]
+            changeChildState: true,
         }
-        const selectChildren = function (member) {
-            for (const child of member.children) {
-                child.checked = e.target.checked;
-                selectChildren(child);
-            }
-        }
-        selectChildren(member);
         this.props.onChildSelect(this.props.index, member);
     }
 
@@ -47,6 +39,7 @@ export default class TreeMember extends React.Component {
             checked: children.every(child => child.checked),
             children: [...children]
         }
+        delete member.changeChildState;
         this.props.onChildSelect(this.props.index, member);
     }
 
@@ -117,7 +110,7 @@ export default class TreeMember extends React.Component {
     }
 
     render() {
-        const { member, filterText, isMasterToggled, isMasterChecked } = this.props;
+        let {member, filterText, isMasterToggled, isMasterChecked } = this.props;
         let memberWrapper = member.name;
         let nestedMember = null;
         let visibility = 'hidden';
@@ -130,6 +123,13 @@ export default class TreeMember extends React.Component {
         if (isMasterToggled) {
             member.checked = isMasterChecked;
         }
+
+        // To change child state
+        if(member.changeChildState && member.children.length > 0) {
+            isMasterToggled = true;
+            isMasterChecked = member.checked;
+        }
+        delete member.changeChildState;
 
         if (member.children.length) {
             visibility = 'visible';
@@ -151,8 +151,7 @@ export default class TreeMember extends React.Component {
                 autoFocus
                 onChange={this.onEditMember}
                 onBlur={this.onEndEditing}
-                value={member.name}>
-            </input>
+                value={member.name} />
         }
 
         if (this.state.isMouseOver) {
