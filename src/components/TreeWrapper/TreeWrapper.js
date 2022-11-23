@@ -1,6 +1,7 @@
 import React from 'react';
 import TreeMember from '../TreeMember/TreeMember';
 import './TreeWrapper.css';
+import { isTreeMemberAvailable } from '../../utils/utils';
 export default class TreeWrapper extends React.Component {
     constructor(props) {
         super(props);
@@ -21,7 +22,11 @@ export default class TreeWrapper extends React.Component {
         const list = [
             ...this.props.list
         ]
-        list[index] = member;
+        if (member.deleted) {
+            list.splice(index, 1)
+        } else {
+            list[index] = member;
+        }
         this.props.onChildDelete(list);
     }
 
@@ -37,40 +42,10 @@ export default class TreeWrapper extends React.Component {
         const { list, filterText, parent, isMasterChecked, isMasterToggled } = this.props;
         const li = [];
         let noResults = null;
-
-        const isMemberAvailable = function (member) {
-            return member.name.toLowerCase().includes(filterText.toLowerCase());
-        }
-
-        const isParentAvailable = function (member) {
-            let parent = member.parent;
-            while (parent) {
-                if (isMemberAvailable(parent)) {
-                    return true;
-                }
-                parent = parent.parent;
-            }
-            return false;
-        }
-
-        const isChildrenAvailable = function (member) {
-            for (const child of member.children) {
-                if (isMemberAvailable(child)) {
-                    return true;
-                }
-                if (isChildrenAvailable(child)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
+        
         list.forEach((member, index) => {
             member.parent = parent;
-            if (member.deleted) {
-                return;
-            }
-            if (isMemberAvailable(member) || isParentAvailable(member) || isChildrenAvailable(member)) {
+            if (isTreeMemberAvailable(member, filterText)) {
                 li.push(
                     <TreeMember
                         key={index}

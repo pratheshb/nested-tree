@@ -20,9 +20,9 @@ export default class SearchBar extends React.Component {
     render() {
         return (
             <div className="search-bar-container">
-                <BsChevronDown className='icon'></BsChevronDown>
-                <input type='checkbox' className='master-checkbox' onChange={this.onMasterCheckBoxChange} checked={this.props.isMasterChecked}></input>
-                <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.onFilterTextChange}></input>
+                <BsChevronDown className='icon'/>
+                <input type='checkbox' className='master-checkbox' onChange={this.onMasterCheckBoxChange} checked={this.props.isMasterChecked} />
+                <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.onFilterTextChange} />
             </div>
         )
     }

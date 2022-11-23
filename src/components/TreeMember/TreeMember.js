@@ -10,7 +10,6 @@ export default class TreeMember extends React.Component {
         this.state = {
             isEditing: false,
             isMouseOver: false,
-            index: props.index,
         };
         this.onStartEditing = this.onStartEditing.bind(this);
         this.onEndEditing = this.onEndEditing.bind(this);
@@ -32,13 +31,13 @@ export default class TreeMember extends React.Component {
             children: [...children]
         }
         const selectChildren = function (member) {
-            for (let child of member.children) {
+            for (const child of member.children) {
                 child.checked = e.target.checked;
                 selectChildren(child);
             }
         }
         selectChildren(member);
-        this.props.onChildSelect(this.state.index, member);
+        this.props.onChildSelect(this.props.index, member);
     }
 
     handleChildSelect(children) {
@@ -47,7 +46,7 @@ export default class TreeMember extends React.Component {
             checked: children.every(child => child.checked),
             children: [...children]
         }
-        this.props.onChildSelect(this.state.index, member);
+        this.props.onChildSelect(this.props.index, member);
     }
 
     onDeleteMember() {
@@ -55,16 +54,16 @@ export default class TreeMember extends React.Component {
             ...this.props.member,
             deleted: true
         };
-        this.props.onChildDelete(this.state.index, member);
+        this.props.onChildDelete(this.props.index, member);
     }
 
     handleChildDelete(children) {
         const member = {
             ...this.props.member,
-            checked: children.filter(child => !child.deleted).every(child => child.checked),
+            checked: children.length > 0 && children.every(child => child.checked),
             children: [...children]
         }
-        this.props.onChildDelete(this.state.index, member);
+        this.props.onChildDelete(this.props.index, member);
     }
 
     onEditMember(e) {
@@ -72,7 +71,7 @@ export default class TreeMember extends React.Component {
             ...this.props.member,
             name: e.target.value
         };
-        this.props.onChildEdit(this.state.index, member);
+        this.props.onChildEdit(this.props.index, member);
     }
 
     handleChildEdit(children) {
@@ -80,7 +79,7 @@ export default class TreeMember extends React.Component {
             ...this.props.member,
             children: [...children]
         };
-        this.props.onChildEdit(this.state.index, member);
+        this.props.onChildEdit(this.props.index, member);
     }
 
 
@@ -147,15 +146,15 @@ export default class TreeMember extends React.Component {
         }
 
         if (this.state.isMouseOver) {
-            deleteIcon = <MdDelete title="Delete" onClick={this.onDeleteMember}></MdDelete>;
+            deleteIcon = <MdDelete title="Delete" onClick={this.onDeleteMember} />;
         }
         return (
             <li>
                 <div className='member-container' onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
                     <div className='member'>
-                        <BsChevronDown style={{ visibility }} className='icon'></BsChevronDown>
-                        <input type="checkbox" onChange={this.onSelectMember} checked={member.checked}></input>
-                        <MdDragIndicator></MdDragIndicator>
+                        <BsChevronDown style={{ visibility }} className='icon' />
+                        <input type="checkbox" onChange={this.onSelectMember} checked={member.checked} />
+                        <MdDragIndicator />
                         <span onClick={this.onStartEditing}>{memberWrapper}</span>
                     </div>
                     {deleteIcon}
