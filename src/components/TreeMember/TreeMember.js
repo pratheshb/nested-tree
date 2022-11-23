@@ -54,8 +54,10 @@ export default class TreeMember extends React.Component {
     handleChildDelete(children) {
         const member = {
             ...this.props.member,
-            checked: children.length > 0 && children.every(child => child.checked),
             children: [...children]
+        }
+        if(children.length > 0) {
+            member.checked = children.every(child => child.checked);
         }
         this.props.onChildDelete(this.props.index, member);
     }
