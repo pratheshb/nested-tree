@@ -1,6 +1,7 @@
 let filterText = '';
+
 const isMemberAvailable = function (member) {
-    return member.name.toLowerCase().includes(filterText.toLowerCase());
+    return member.name.toLowerCase().includes(filterText);
 }
 
 const isParentAvailable = function (member) {
@@ -26,10 +27,44 @@ const isChildrenAvailable = function (member) {
     return false;
 }
 
-
 const isTreeMemberAvailable = function (member, text = '') {
-    filterText = text;
+    filterText = text.toLowerCase();
     return isMemberAvailable(member) || isParentAvailable(member) || isChildrenAvailable(member);
 }
 
-export { isTreeMemberAvailable };
+const list = [
+    {
+      name: 'Country', children: [
+        {
+          name: 'India', children: [
+            {
+              name: 'Region', children: [
+                {
+                  name: 'Chennai', children: [
+                    {
+                      name: 'Area', children: [
+                        { name: 'OMR', children: [] },
+                        { name: 'ECR', children: [] },
+                      ]
+                    }
+                  ]
+                },
+                { name: 'Bangalore', children: [] },
+              ]
+            }
+          ]
+        },
+        { name: 'China', children: [] },
+        { name: 'Vietnam', children: [] },
+      ]
+    },
+    {
+      name: 'Expires on', children: [
+        { name: 'Jan', children: [] },
+        { name: 'Feb', children: [] },
+        { name: 'Mar', children: [] },
+      ]
+    },
+  ];
+
+export { isTreeMemberAvailable, list };

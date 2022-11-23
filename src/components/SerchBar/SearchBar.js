@@ -24,6 +24,6 @@ export default class SearchBar extends React.Component {
                 <input type='checkbox' className='master-checkbox' onChange={this.onMasterCheckBoxChange} checked={this.props.isMasterChecked} />
                 <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.onFilterTextChange} />
             </div>
-        )
+        );
     }
 }

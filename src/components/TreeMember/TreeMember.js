@@ -55,7 +55,8 @@ export default class TreeMember extends React.Component {
         const member = {
             ...this.props.member,
             children: [...children]
-        }
+        };
+
         if(children.length > 0) {
             member.checked = children.every(child => child.checked);
         }
@@ -66,7 +67,7 @@ export default class TreeMember extends React.Component {
         const member = {
             ...this.props.member,
             children: [...children]
-        }
+        };
         this.props.onReorder(this.props.index, member);
     }
 
@@ -145,7 +146,7 @@ export default class TreeMember extends React.Component {
                 onChildDelete={this.handleChildDelete}
                 onChildEdit={this.handleChildEdit}
                 onReorder = {this.handleReorder}
-            />
+            />;
         }
         if (this.state.isEditing) {
             memberWrapper = <input
@@ -153,7 +154,7 @@ export default class TreeMember extends React.Component {
                 autoFocus
                 onChange={this.onEditMember}
                 onBlur={this.onEndEditing}
-                value={member.name} />
+                value={member.name} />;
         }
 
         if (this.state.isMouseOver) {

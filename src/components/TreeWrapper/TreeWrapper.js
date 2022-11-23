@@ -15,7 +15,7 @@ export default class TreeWrapper extends React.Component {
     handleChildSelect(index, member) {
         const list = [
             ...this.props.list
-        ]
+        ];
         list[index] = member;
         this.props.onChildSelect(list);
     }
@@ -23,9 +23,9 @@ export default class TreeWrapper extends React.Component {
     handleChildDelete(index, member) {
         const list = [
             ...this.props.list
-        ]
+        ];
         if (member.deleted) {
-            list.splice(index, 1)
+            list.splice(index, 1);
         } else {
             list[index] = member;
         }
@@ -35,7 +35,7 @@ export default class TreeWrapper extends React.Component {
     handleChildEdit(index, member) {
         const list = [
             ...this.props.list
-        ]
+        ];
         list[index] = member;
         this.props.onChildEdit(list);
     }
@@ -43,7 +43,7 @@ export default class TreeWrapper extends React.Component {
     handleReorder(index, member) {
         const list = [
             ...this.props.list
-        ]
+        ];
         list[index] = member;
         this.props.onReorder(list);
     }
@@ -73,7 +73,7 @@ export default class TreeWrapper extends React.Component {
             }
         });
         if (parent === null && li.length === 0) {
-            noResults = <div className='no-items'>No items found!</div>
+            noResults = <div className='no-items'>No items found!</div>;
         }
         return (
             <>

@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import SearchBar from './components/SerchBar/SearchBar';
 import TreeWrapper from './components/TreeWrapper/TreeWrapper';
-
+import { list } from './utils/utils'
 
 export default class App extends React.Component {
 
@@ -41,7 +41,7 @@ export default class App extends React.Component {
       list,
       isMasterChecked: list.every(child => child.checked),
       isMasterToggled: false
-    })
+    });
   }
 
   handleChildDelete(list) {
@@ -50,21 +50,21 @@ export default class App extends React.Component {
       list,
       isMasterChecked: existingList.length > 0 && existingList.every(child => child.checked),
       isMasterToggled: false
-    })
+    });
   }
 
   handleChildEdit(list) {
     this.setState({
       list,
       isMasterToggled: false
-    })
+    });
   }
 
   handleReorder(list) {
     this.setState({
       list,
       isMasterToggled: false
-    })
+    });
   }
   
 
@@ -90,40 +90,4 @@ export default class App extends React.Component {
       </div>
     );
   }
-};
-
-
-const list = [
-  {
-    name: 'Country', children: [
-      {
-        name: 'India', children: [
-          {
-            name: 'Region', children: [
-              {
-                name: 'Chennai', children: [
-                  {
-                    name: 'Area', children: [
-                      { name: 'OMR', children: [] },
-                      { name: 'ECR', children: [] },
-                    ]
-                  }
-                ]
-              },
-              { name: 'Bangalore', children: [] },
-            ]
-          }
-        ]
-      },
-      { name: 'China', children: [] },
-      { name: 'Vietnam', children: [] },
-    ]
-  },
-  {
-    name: 'Expires on', children: [
-      { name: 'Jan', children: [] },
-      { name: 'Feb', children: [] },
-      { name: 'Mar', children: [] },
-    ]
-  },
-];
+}
