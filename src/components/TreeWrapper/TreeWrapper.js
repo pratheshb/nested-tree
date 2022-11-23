@@ -2,12 +2,14 @@ import React from 'react';
 import TreeMember from '../TreeMember/TreeMember';
 import './TreeWrapper.css';
 import { isTreeMemberAvailable } from '../../utils/utils';
+import { ReactSortable } from "react-sortablejs";
 export default class TreeWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.handleChildSelect = this.handleChildSelect.bind(this);
         this.handleChildDelete = this.handleChildDelete.bind(this);
         this.handleChildEdit = this.handleChildEdit.bind(this);
+        this.handleReorder = this.handleReorder.bind(this);
     }
 
     handleChildSelect(index, member) {
@@ -38,11 +40,19 @@ export default class TreeWrapper extends React.Component {
         this.props.onChildEdit(list);
     }
 
+    handleReorder(index, member) {
+        const list = [
+            ...this.props.list
+        ]
+        list[index] = member;
+        this.props.onReorder(list);
+    }
+
     render() {
         const { list, filterText, parent, isMasterChecked, isMasterToggled } = this.props;
         const li = [];
         let noResults = null;
-        
+
         list.forEach((member, index) => {
             member.parent = parent;
             if (isTreeMemberAvailable(member, filterText)) {
@@ -57,6 +67,7 @@ export default class TreeWrapper extends React.Component {
                         onChildSelect={this.handleChildSelect}
                         onChildDelete={this.handleChildDelete}
                         onChildEdit={this.handleChildEdit}
+                        onReorder={this.handleReorder}
                     />
                 );
             }
@@ -66,9 +77,13 @@ export default class TreeWrapper extends React.Component {
         }
         return (
             <>
-                <ul>
+                <ReactSortable
+                    tag='ul'
+                    list={list}
+                    setList={(newState) => this.props.onReorder(newState)}
+                >
                     {li}
-                </ul>
+                </ReactSortable>
                 {noResults}
             </>
         );

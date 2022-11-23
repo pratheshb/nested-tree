@@ -19,6 +19,7 @@ export default class App extends React.Component {
     this.handleChildSelect = this.handleChildSelect.bind(this);
     this.handleChildDelete = this.handleChildDelete.bind(this);
     this.handleChildEdit = this.handleChildEdit.bind(this);
+    this.handleReorder = this.handleReorder.bind(this);
   }
 
   handleFilterTextChange(filterText) {
@@ -59,6 +60,14 @@ export default class App extends React.Component {
     })
   }
 
+  handleReorder(list) {
+    this.setState({
+      list,
+      isMasterToggled: false
+    })
+  }
+  
+
   render() {
     return (
       <div className="container">
@@ -75,6 +84,7 @@ export default class App extends React.Component {
             onChildSelect={this.handleChildSelect}
             onChildDelete={this.handleChildDelete}
             onChildEdit={this.handleChildEdit}
+            onReorder={this.handleReorder}
           />
         </div>
       </div>

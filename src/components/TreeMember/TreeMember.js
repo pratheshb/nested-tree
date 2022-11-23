@@ -21,6 +21,7 @@ export default class TreeMember extends React.Component {
         this.handleChildSelect = this.handleChildSelect.bind(this);
         this.handleChildDelete = this.handleChildDelete.bind(this);
         this.handleChildEdit = this.handleChildEdit.bind(this);
+        this.handleReorder = this.handleReorder.bind(this);
     }
 
     onSelectMember(e) {
@@ -64,6 +65,14 @@ export default class TreeMember extends React.Component {
             children: [...children]
         }
         this.props.onChildDelete(this.props.index, member);
+    }
+
+    handleReorder(children) {
+        const member = {
+            ...this.props.member,
+            children: [...children]
+        }
+        this.props.onReorder(this.props.index, member);
     }
 
     onEditMember(e) {
@@ -133,6 +142,7 @@ export default class TreeMember extends React.Component {
                 onChildSelect={this.handleChildSelect}
                 onChildDelete={this.handleChildDelete}
                 onChildEdit={this.handleChildEdit}
+                onReorder = {this.handleReorder}
             />
         }
         if (this.state.isEditing) {
@@ -154,7 +164,7 @@ export default class TreeMember extends React.Component {
                     <div className='member'>
                         <BsChevronDown style={{ visibility }} className='icon' />
                         <input type="checkbox" onChange={this.onSelectMember} checked={member.checked} />
-                        <MdDragIndicator />
+                        <MdDragIndicator className='drag-icon' />
                         <span onClick={this.onStartEditing}>{memberWrapper}</span>
                     </div>
                     {deleteIcon}
