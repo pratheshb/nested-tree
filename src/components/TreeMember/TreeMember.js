@@ -113,7 +113,7 @@ export default class TreeMember extends React.Component {
     }
 
     render() {
-        let {member, filterText, isMasterToggled, isMasterChecked } = this.props;
+        const {member, filterText, isMasterToggled, isMasterChecked } = this.props;
         let memberWrapper = member.name;
         let nestedMember = null;
         let visibility = 'hidden';
@@ -127,26 +127,20 @@ export default class TreeMember extends React.Component {
             member.checked = isMasterChecked;
         }
 
-        // To change child state
-        if(member.changeChildState && member.children.length > 0) {
-            isMasterToggled = true;
-            isMasterChecked = member.checked;
-        }
-        delete member.changeChildState;
-
-        if (member.children.length) {
+        if (member.children.length > 0) {
             visibility = 'visible';
             nestedMember = <TreeWrapper
                 list={member.children}
                 parent={member}
                 filterText={filterText}
-                isMasterChecked={isMasterChecked}
-                isMasterToggled={isMasterToggled}
+                isMasterChecked={member.changeChildState ? member.checked : isMasterChecked}
+                isMasterToggled={isMasterToggled || member.changeChildState}
                 onChildSelect={this.handleChildSelect}
                 onChildDelete={this.handleChildDelete}
                 onChildEdit={this.handleChildEdit}
                 onReorder = {this.handleReorder}
             />;
+            delete member.changeChildState;
         }
         if (this.state.isEditing) {
             memberWrapper = <input
