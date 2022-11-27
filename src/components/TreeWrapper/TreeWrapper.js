@@ -14,11 +14,7 @@ export default class TreeWrapper extends React.Component {
 
     handleChildSelect(index, member) {
         const list = this.props.list.map((elm, i) => {
-            if (i === index) {
-                return member;
-            } else {
-                return elm;
-            }
+            return i === index ? member : elm;
         });
         this.props.onChildSelect(list);
     }

@@ -3,6 +3,7 @@ import TreeWrapper from '../TreeWrapper/TreeWrapper';
 import './TreeMember.css';
 import { BsChevronDown } from "react-icons/bs";
 import { MdDragIndicator, MdDelete } from "react-icons/md";
+import { isTreeMemberAvailable } from '../../utils/utils';
 
 export default class TreeMember extends React.Component {
     constructor(props) {
@@ -34,9 +35,10 @@ export default class TreeMember extends React.Component {
     }
 
     handleChildSelect(children) {
+        const filteredList = children.filter((member) => isTreeMemberAvailable(member, this.props.filterText))
         const member = {
             ...this.props.member,
-            checked: children.every(child => child.checked),
+            checked: filteredList.length > 0 && filteredList.every(child => child.checked),
             children: [...children]
         };
         this.props.onChildSelect(this.props.index, member);

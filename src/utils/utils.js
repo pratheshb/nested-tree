@@ -38,13 +38,13 @@ const mapFn = function(member, filterText, isMasterToggled, isMasterChecked) {
     if (member.isMasterToggled) {
       isMasterToggled = true;
       isMasterChecked = member.checked;
-      delete member.isMasterToggled;
     }
     return ({
       ...member,
+      isMasterToggled: false,
       checked: isMasterToggled ? isMasterChecked : member.checked,
       children: [...member.children].map((member) => mapFn(member, filterText, isMasterToggled, isMasterChecked))
-    })
+    });
   } else {
     return member;
   }

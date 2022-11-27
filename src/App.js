@@ -23,7 +23,7 @@ export default class App extends React.Component {
 
   handleFilterTextChange(filterText) {
     this.setState(state => {
-      const filteredList = state.list.filter((member) => isTreeMemberAvailable(member, state.filterText));
+      const filteredList = state.list.filter((member) => isTreeMemberAvailable(member, filterText));
       return ({
         filterText,
         isMasterChecked: filteredList.length > 0 && filteredList.every(member => member.checked)
@@ -43,9 +43,10 @@ export default class App extends React.Component {
 
   handleChildSelect(list) {
     this.setState(state => {
+      const filteredList = list.filter((member) => isTreeMemberAvailable(member, state.filterText));
       return ({
         list: list.map((member) => mapFn(member, state.filterText)),
-        isMasterChecked: list.every(child => child.checked)
+        isMasterChecked: filteredList.length > 0 && filteredList.every(child => child.checked)
       });
     });
   }
