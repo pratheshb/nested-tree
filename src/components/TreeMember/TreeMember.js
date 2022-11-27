@@ -28,8 +28,8 @@ export default class TreeMember extends React.Component {
         const member = {
             ...this.props.member,
             checked: e.target.checked,
-            changeChildState: true,
-        }
+            isMasterToggled: true
+        };
         this.props.onChildSelect(this.props.index, member);
     }
 
@@ -38,8 +38,7 @@ export default class TreeMember extends React.Component {
             ...this.props.member,
             checked: children.every(child => child.checked),
             children: [...children]
-        }
-        delete member.changeChildState;
+        };
         this.props.onChildSelect(this.props.index, member);
     }
 
@@ -57,7 +56,7 @@ export default class TreeMember extends React.Component {
             children: [...children]
         };
 
-        if(children.length > 0) {
+        if (children.length > 0) {
             member.checked = children.every(child => child.checked);
         }
         this.props.onChildDelete(this.props.index, member);
@@ -113,7 +112,9 @@ export default class TreeMember extends React.Component {
     }
 
     render() {
-        const {member, filterText, isMasterToggled, isMasterChecked } = this.props;
+        const member = {
+            ...this.props.member
+        };
         let memberWrapper = member.name;
         let nestedMember = null;
         let visibility = 'hidden';
@@ -123,24 +124,17 @@ export default class TreeMember extends React.Component {
             member.checked = false;
         }
 
-        if (isMasterToggled) {
-            member.checked = isMasterChecked;
-        }
-
         if (member.children.length > 0) {
             visibility = 'visible';
             nestedMember = <TreeWrapper
                 list={member.children}
                 parent={member}
-                filterText={filterText}
-                isMasterChecked={member.changeChildState ? member.checked : isMasterChecked}
-                isMasterToggled={isMasterToggled || member.changeChildState}
+                filterText={this.props.filterText}
                 onChildSelect={this.handleChildSelect}
                 onChildDelete={this.handleChildDelete}
                 onChildEdit={this.handleChildEdit}
-                onReorder = {this.handleReorder}
+                onReorder={this.handleReorder}
             />;
-            delete member.changeChildState;
         }
         if (this.state.isEditing) {
             memberWrapper = <input

@@ -13,48 +13,55 @@ export default class TreeWrapper extends React.Component {
     }
 
     handleChildSelect(index, member) {
-        const list = [
-            ...this.props.list
-        ];
-        list[index] = member;
+        const list = this.props.list.map((elm, i) => {
+            if (i === index) {
+                return member;
+            } else {
+                return elm;
+            }
+        });
         this.props.onChildSelect(list);
     }
 
     handleChildDelete(index, member) {
-        const list = [
-            ...this.props.list
-        ];
+        let list;
         if (member.deleted) {
-            list.splice(index, 1);
+            list = this.props.list.filter((_, i) => i !== index);
         } else {
-            list[index] = member;
+            list = this.props.list.map((elm, i) => {
+                return i === index ? member : elm;
+            });
         }
         this.props.onChildDelete(list);
     }
 
     handleChildEdit(index, member) {
-        const list = [
-            ...this.props.list
-        ];
-        list[index] = member;
+        const list = this.props.list.map((elm, i) => {
+            return i === index ? member : elm;
+        });
         this.props.onChildEdit(list);
     }
 
     handleReorder(index, member) {
-        const list = [
-            ...this.props.list
-        ];
-        list[index] = member;
+        const list = this.props.list.map((elm, i) => {
+            return i === index ? member : elm;
+        });
         this.props.onReorder(list);
     }
 
     render() {
-        const { list, filterText, parent, isMasterChecked, isMasterToggled } = this.props;
+        const { filterText, parent } = this.props;
+        const list = [
+            ...this.props.list
+        ];
         const li = [];
         let noResults = null;
 
-        list.forEach((member, index) => {
-            member.parent = parent;
+        list.forEach((elm, index) => {
+            const member = {
+                ...elm,
+                parent,
+            };
             if (isTreeMemberAvailable(member, filterText)) {
                 li.push(
                     <TreeMember
@@ -62,8 +69,6 @@ export default class TreeWrapper extends React.Component {
                         member={member}
                         index={index}
                         filterText={filterText}
-                        isMasterChecked={isMasterChecked}
-                        isMasterToggled={isMasterToggled}
                         onChildSelect={this.handleChildSelect}
                         onChildDelete={this.handleChildDelete}
                         onChildEdit={this.handleChildEdit}

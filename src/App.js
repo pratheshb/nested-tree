@@ -2,17 +2,16 @@ import React from 'react';
 import './App.css';
 import SearchBar from './components/SerchBar/SearchBar';
 import TreeWrapper from './components/TreeWrapper/TreeWrapper';
-import { list } from './utils/utils'
+import { isTreeMemberAvailable, mapFn, list } from './utils/utils'
 
 export default class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      list: list,
+      list: [...list],
       filterText: '',
       isMasterChecked: false,
-      isMasterToggled: false,
     };
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleMasterCheckBoxChange = this.handleMasterCheckBoxChange.bind(this);
@@ -23,31 +22,38 @@ export default class App extends React.Component {
   }
 
   handleFilterTextChange(filterText) {
-    this.setState({
-      filterText,
-      isMasterToggled: false,
+    this.setState(state => {
+      const filteredList = state.list.filter((member) => isTreeMemberAvailable(member, state.filterText));
+      return ({
+        filterText,
+        isMasterChecked: filteredList.length > 0 && filteredList.every(member => member.checked)
+      });
     });
   }
 
   handleMasterCheckBoxChange(isMasterChecked) {
-    this.setState({
-      isMasterChecked,
-      isMasterToggled: true
+    this.setState((state) => {
+      const list = [...state.list];
+      return ({
+        list: list.map((member) => mapFn(member, state.filterText, true, isMasterChecked)),
+        isMasterChecked: isMasterChecked
+      });
     });
   }
 
   handleChildSelect(list) {
-    this.setState({
-      list,
-      isMasterChecked: list.every(child => child.checked),
-      isMasterToggled: false
+    this.setState(state => {
+      return ({
+        list: list.map((member) => mapFn(member, state.filterText)),
+        isMasterChecked: list.every(child => child.checked)
+      });
     });
   }
 
   handleChildDelete(list) {
-    const existingList = list.filter(child => !child.deleted)
+    const existingList = list.filter(child => !child.deleted);
     this.setState({
-      list,
+      list: [...list],
       isMasterChecked: existingList.length > 0 && existingList.every(child => child.checked),
       isMasterToggled: false
     });
@@ -55,18 +61,18 @@ export default class App extends React.Component {
 
   handleChildEdit(list) {
     this.setState({
-      list,
+      list: [...list],
       isMasterToggled: false
     });
   }
 
   handleReorder(list) {
     this.setState({
-      list,
+      list: [...list],
       isMasterToggled: false
     });
   }
-  
+
 
   render() {
     return (

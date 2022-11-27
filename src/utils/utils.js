@@ -32,6 +32,24 @@ const isTreeMemberAvailable = function (member, text = '') {
     return isMemberAvailable(member) || isParentAvailable(member) || isChildrenAvailable(member);
 }
 
+
+const mapFn = function(member, filterText, isMasterToggled, isMasterChecked) {
+  if (isTreeMemberAvailable(member, filterText)) {
+    if (member.isMasterToggled) {
+      isMasterToggled = true;
+      isMasterChecked = member.checked;
+      delete member.isMasterToggled;
+    }
+    return ({
+      ...member,
+      checked: isMasterToggled ? isMasterChecked : member.checked,
+      children: [...member.children].map((member) => mapFn(member, filterText, isMasterToggled, isMasterChecked))
+    })
+  } else {
+    return member;
+  }
+}
+
 const list = [
     {
       name: 'Country', children: [
@@ -67,4 +85,4 @@ const list = [
     },
   ];
 
-export { isTreeMemberAvailable, list };
+export { isTreeMemberAvailable, mapFn, list };
