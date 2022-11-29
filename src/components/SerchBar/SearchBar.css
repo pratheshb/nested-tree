@@ -9,7 +9,23 @@
 
 .search-bar {
     width: 75%;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 8px;
+    border-radius: 2px;
     border: 1px solid #777;
+}
+
+.toggle-list-btn {
+    padding: 8px;
+    width: 142px;
+    background-color: rgb(14, 139, 255);
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color .2s ease-in-out;
+    font-size: 14px;
+}
+
+.toggle-list-btn:hover {
+    background-color:rgb(4, 109, 229);
 }

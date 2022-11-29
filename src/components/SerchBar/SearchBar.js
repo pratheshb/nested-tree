@@ -28,7 +28,7 @@ export default class SearchBar extends React.Component {
                 <BsChevronDown className='icon'/>
                 <input type='checkbox' className='master-checkbox' onChange={this.onMasterCheckBoxChange} checked={this.props.isMasterChecked} />
                 <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.onFilterTextChange} />
-                <button onClick={this.onToggleList}>Toggle List</button>
+                <button className='toggle-list-btn' onClick={this.onToggleList}>Toggle List</button>
             </div>
         );
     }
