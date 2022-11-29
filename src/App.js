@@ -2,16 +2,17 @@ import React from 'react';
 import './App.css';
 import SearchBar from './components/SerchBar/SearchBar';
 import TreeWrapper from './components/TreeWrapper/TreeWrapper';
-import { isTreeMemberAvailable, mapFn, list } from './utils/utils'
+import { isTreeMemberAvailable, mapFn, getData } from './utils/utils'
 
 export default class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      list: [...list],
+      list: [],
       filterText: '',
       isMasterChecked: false,
+      isList2: false
     };
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleMasterCheckBoxChange = this.handleMasterCheckBoxChange.bind(this);
@@ -19,6 +20,21 @@ export default class App extends React.Component {
     this.handleChildDelete = this.handleChildDelete.bind(this);
     this.handleChildEdit = this.handleChildEdit.bind(this);
     this.handleReorder = this.handleReorder.bind(this);
+    this.handleCollapse = this.handleCollapse.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.onToggleList = this.onToggleList.bind(this);
+    this.fetchData();
+  }
+
+  async fetchData(isList2) {
+    const url = isList2 ? '/list2.json' : '/list.json'
+    const res = await fetch(url);
+  const json = await res.json();
+  const list = json.list;
+    this.setState({
+      list,
+      isList2
+    });
   }
 
   handleFilterTextChange(filterText) {
@@ -56,22 +72,29 @@ export default class App extends React.Component {
     this.setState({
       list: [...list],
       isMasterChecked: existingList.length > 0 && existingList.every(child => child.checked),
-      isMasterToggled: false
     });
   }
 
   handleChildEdit(list) {
     this.setState({
       list: [...list],
-      isMasterToggled: false
+    });
+  }
+
+  handleCollapse(list) {
+    this.setState({
+      list: [...list],
     });
   }
 
   handleReorder(list) {
     this.setState({
       list: [...list],
-      isMasterToggled: false
     });
+  }
+
+  onToggleList(isList2) {
+    this.fetchData(isList2);
   }
 
 
@@ -82,6 +105,8 @@ export default class App extends React.Component {
           isMasterChecked={this.state.isMasterChecked}
           onFilterTextChange={this.handleFilterTextChange}
           onMasterCheckBoxChange={this.handleMasterCheckBoxChange}
+          isList2 = {this.state.isList2}
+          onToggleList = {this.onToggleList}
         />
         <hr></hr>
         <div className='tree-container'>

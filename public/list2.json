@@ -1,0 +1,49 @@
+{
+    "list": [
+        {
+            "name": "Country",
+            "children": [
+                {
+                    "name": "India",
+                    "children": [
+                        {
+                            "name": "Region",
+                            "children": [
+                                {
+                                    "name": "Chennai",
+                                    "children": [
+                                        {
+                                            "name": "Area",
+                                            "children": [
+                                                {
+                                                    "name": "OMR",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "name": "ECR",
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Bangalore",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "China",
+                    "children": []
+                },
+                {
+                    "name": "Vietnam",
+                    "children": []
+                }
+            ]
+        }
+    ]
+}

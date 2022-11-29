@@ -7,6 +7,7 @@ export default class SearchBar extends React.Component {
         super(props);
         this.onFilterTextChange = this.onFilterTextChange.bind(this);
         this.onMasterCheckBoxChange = this.onMasterCheckBoxChange.bind(this);
+        this.onToggleList = this.onToggleList.bind(this);
     }
 
     onFilterTextChange(e) {
@@ -17,12 +18,17 @@ export default class SearchBar extends React.Component {
         this.props.onMasterCheckBoxChange(e.target.checked);
     }
 
+    onToggleList() {
+        this.props.onToggleList(!this.props.isList2);
+    }
+
     render() {
         return (
             <div className="search-bar-container">
                 <BsChevronDown className='icon'/>
                 <input type='checkbox' className='master-checkbox' onChange={this.onMasterCheckBoxChange} checked={this.props.isMasterChecked} />
                 <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.onFilterTextChange} />
+                <button onClick={this.onToggleList}>Toggle List</button>
             </div>
         );
     }

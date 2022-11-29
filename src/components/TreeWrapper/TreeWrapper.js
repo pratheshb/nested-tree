@@ -10,9 +10,17 @@ export default class TreeWrapper extends React.Component {
         this.handleChildDelete = this.handleChildDelete.bind(this);
         this.handleChildEdit = this.handleChildEdit.bind(this);
         this.handleReorder = this.handleReorder.bind(this);
+        this.handleCollapse = this.handleCollapse.bind(this);
     }
 
     handleChildSelect(index, member) {
+        const list = this.props.list.map((elm, i) => {
+            return i === index ? member : elm;
+        });
+        this.props.onChildSelect(list);
+    }
+
+    handleCollapse(index, member) {
         const list = this.props.list.map((elm, i) => {
             return i === index ? member : elm;
         });
@@ -69,6 +77,7 @@ export default class TreeWrapper extends React.Component {
                         onChildDelete={this.handleChildDelete}
                         onChildEdit={this.handleChildEdit}
                         onReorder={this.handleReorder}
+                        onCollapse = {this.handleCollapse}
                     />
                 );
             }

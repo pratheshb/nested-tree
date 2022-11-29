@@ -23,6 +23,8 @@ export default class TreeMember extends React.Component {
         this.handleChildDelete = this.handleChildDelete.bind(this);
         this.handleChildEdit = this.handleChildEdit.bind(this);
         this.handleReorder = this.handleReorder.bind(this);
+        this.onCollapse = this.onCollapse.bind(this);
+        this.handleCollapse = this.handleCollapse.bind(this);
     }
 
     onSelectMember(e) {
@@ -42,6 +44,14 @@ export default class TreeMember extends React.Component {
             children: [...children]
         };
         this.props.onChildSelect(this.props.index, member);
+    }
+
+    handleCollapse(children) {
+        const member = {
+            ...this.props.member,
+            children: [...children]
+        };
+        this.props.onCollapse(this.props.index, member);
     }
 
     onDeleteMember() {
@@ -113,21 +123,36 @@ export default class TreeMember extends React.Component {
         this.setState({ isMouseOver: false });
     }
 
+    onCollapse() {
+        const member = {
+            ...this.props.member,
+        };
+        member.collapsed = !member.collapsed;
+        this.props.onCollapse(this.props.index, member);
+    }
+
     render() {
         const member = {
             ...this.props.member
         };
         let memberWrapper = member.name;
         let nestedMember = null;
-        let visibility = 'hidden';
+        let style = {
+            visibility: 'hidden',
+            transform: 'rotate(270deg)'
+        };
         let deleteIcon = null;
 
         if (member.checked === undefined) {
             member.checked = false;
         }
 
-        if (member.children.length > 0) {
-            visibility = 'visible';
+        if(member.children.length > 0) {
+            style.visibility = 'visible';
+        }
+
+        if (!member.collapsed && member.children.length > 0) {
+            style.transform = 'rotate(0deg)';
             nestedMember = <TreeWrapper
                 list={member.children}
                 parent={member}
@@ -136,6 +161,7 @@ export default class TreeMember extends React.Component {
                 onChildDelete={this.handleChildDelete}
                 onChildEdit={this.handleChildEdit}
                 onReorder={this.handleReorder}
+                onCollapse = {this.handleCollapse}
             />;
         }
         if (this.state.isEditing) {
@@ -154,7 +180,7 @@ export default class TreeMember extends React.Component {
             <li>
                 <div className='member-container' onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
                     <div className='member'>
-                        <BsChevronDown style={{ visibility }} className='icon' />
+                        <BsChevronDown style={style} onClick={this.onCollapse} className='icon' />
                         <input type="checkbox" onChange={this.onSelectMember} checked={member.checked} />
                         <MdDragIndicator className='drag-icon' />
                         <span onClick={this.onStartEditing}>{memberWrapper}</span>
