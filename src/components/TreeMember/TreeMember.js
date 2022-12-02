@@ -1,194 +1,137 @@
-import React from 'react';
-import TreeWrapper from '../TreeWrapper/TreeWrapper';
-import './TreeMember.css';
+import { useState } from 'react';
 import { BsChevronDown } from "react-icons/bs";
 import { MdDragIndicator, MdDelete } from "react-icons/md";
+import TreeWrapper from '../TreeWrapper/TreeWrapper';
 import { isTreeMemberAvailable } from '../../utils/utils';
+import './TreeMember.css';
 
-export default class TreeMember extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isEditing: false,
-            isMouseOver: false,
-        };
-        this.onStartEditing = this.onStartEditing.bind(this);
-        this.onEndEditing = this.onEndEditing.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-        this.onSelectMember = this.onSelectMember.bind(this);
-        this.onDeleteMember = this.onDeleteMember.bind(this);
-        this.onEditMember = this.onEditMember.bind(this);
-        this.handleChildSelect = this.handleChildSelect.bind(this);
-        this.handleChildDelete = this.handleChildDelete.bind(this);
-        this.handleChildEdit = this.handleChildEdit.bind(this);
-        this.handleReorder = this.handleReorder.bind(this);
-        this.onCollapse = this.onCollapse.bind(this);
-        this.handleCollapse = this.handleCollapse.bind(this);
-    }
+export default function TreeMember({
+    member,
+    index,
+    filterText,
+    onChildSelect,
+    onChildDelete,
+    onChildEdit,
+    onReorder,
+    onCollapse,
+}) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [isMouseOver, setIsMouseOver] = useState(false);
 
-    onSelectMember(e) {
-        const member = {
-            ...this.props.member,
+    function onSelectMember(e) {
+        onChildSelect(index, {
+            ...member,
             checked: e.target.checked,
             isMasterToggled: true
-        };
-        this.props.onChildSelect(this.props.index, member);
+        });
     }
 
-    handleChildSelect(children) {
-        const filteredList = children.filter((member) => isTreeMemberAvailable(member, this.props.filterText))
-        const member = {
-            ...this.props.member,
+    function handleChildSelect(children) {
+        const filteredList = children.filter((member) => isTreeMemberAvailable(member, filterText));
+        onChildSelect(index, {
+            ...member,
             checked: filteredList.length > 0 && filteredList.every(child => child.checked),
             children: [...children]
-        };
-        this.props.onChildSelect(this.props.index, member);
+        });
     }
 
-    handleCollapse(children) {
-        const member = {
-            ...this.props.member,
+    function handleCollapse(children) {
+        onCollapse(index, {
+            ...member,
             children: [...children]
-        };
-        this.props.onCollapse(this.props.index, member);
+        });
     }
 
-    onDeleteMember() {
-        const member = {
-            ...this.props.member,
+    function onDeleteMember() {
+        onChildDelete(index, {
+            ...member,
             deleted: true
-        };
-        this.props.onChildDelete(this.props.index, member);
+        });
     }
 
-    handleChildDelete(children) {
-        const member = {
-            ...this.props.member,
+    function handleChildDelete(children) {
+        const updatedMember = {
+            ...member,
             children: [...children]
         };
 
         if (children.length > 0) {
-            member.checked = children.every(child => child.checked);
+            updatedMember.checked = children.every(child => child.checked);
         }
-        this.props.onChildDelete(this.props.index, member);
+        onChildDelete(index, updatedMember);
     }
 
-    handleReorder(children) {
-        const member = {
-            ...this.props.member,
+    function handleReorder(children) {
+        onReorder(index, {
+            ...member,
             children: [...children]
-        };
-        this.props.onReorder(this.props.index, member);
+        });
     }
 
-    onEditMember(e) {
-        const member = {
-            ...this.props.member,
+    function onEditMember(e) {
+        onChildEdit(index, {
+            ...member,
             name: e.target.value
-        };
-        this.props.onChildEdit(this.props.index, member);
+        });
     }
 
-    handleChildEdit(children) {
-        const member = {
-            ...this.props.member,
+    function handleChildEdit(children) {
+        onChildEdit(index, {
+            ...member,
             children: [...children]
-        };
-        this.props.onChildEdit(this.props.index, member);
+        });
     }
 
-
-    onStartEditing() {
-        if (this.props.filterText) {
+    function onStartEditing() {
+        if (filterText) {
             alert('filter applied. please clear filter and try editing')
             return;
         }
-        this.setState({
-            isEditing: true
+        setIsEditing(true);
+    }
+
+    function onToggleCollapse() {
+        onCollapse(index, {
+            ...member,
+            collapsed: !member.collapsed
         });
     }
-
-    onEndEditing() {
-        this.setState({
-            isEditing: false
-        });
-    }
-
-    onMouseEnter() {
-        this.setState({ isMouseOver: true });
-    }
-
-    onMouseLeave() {
-        this.setState({ isMouseOver: false });
-    }
-
-    onCollapse() {
-        const member = {
-            ...this.props.member,
-        };
-        member.collapsed = !member.collapsed;
-        this.props.onCollapse(this.props.index, member);
-    }
-
-    render() {
-        const member = {
-            ...this.props.member
-        };
-        let memberWrapper = member.name;
-        let nestedMember = null;
-        let style = {
-            visibility: 'hidden',
-            transform: 'rotate(270deg)'
-        };
-        let deleteIcon = null;
-
-        if (member.checked === undefined) {
-            member.checked = false;
-        }
-
-        if(member.children.length > 0) {
-            style.visibility = 'visible';
-        }
-
-        if (!member.collapsed && member.children.length > 0) {
-            style.transform = 'rotate(0deg)';
-            nestedMember = <TreeWrapper
-                list={member.children}
-                parent={member}
-                filterText={this.props.filterText}
-                onChildSelect={this.handleChildSelect}
-                onChildDelete={this.handleChildDelete}
-                onChildEdit={this.handleChildEdit}
-                onReorder={this.handleReorder}
-                onCollapse = {this.handleCollapse}
-            />;
-        }
-        if (this.state.isEditing) {
-            memberWrapper = <input
-                type="text"
-                autoFocus
-                onChange={this.onEditMember}
-                onBlur={this.onEndEditing}
-                value={member.name} />;
-        }
-
-        if (this.state.isMouseOver) {
-            deleteIcon = <MdDelete title="Delete" onClick={this.onDeleteMember} />;
-        }
-        return (
-            <li>
-                <div className='member-container' onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-                    <div className='member'>
-                        <BsChevronDown style={style} onClick={this.onCollapse} className='icon' />
-                        <input type="checkbox" onChange={this.onSelectMember} checked={member.checked} />
-                        <MdDragIndicator className='drag-icon' />
-                        <span onClick={this.onStartEditing}>{memberWrapper}</span>
-                    </div>
-                    {deleteIcon}
+    const expandIconStyle = {
+        visibility: member.children.length > 0 ? 'visible' : 'hidden',
+        transform: `rotate(${member.collapsed ? '270deg' : '0deg'})`
+    };
+    return (
+        <li>
+            <div className='member-container' onMouseEnter={() => setIsMouseOver(true)} onMouseLeave={() => setIsMouseOver(false)}>
+                <div className='member'>
+                    <BsChevronDown style={expandIconStyle} onClick={onToggleCollapse} className='icon' />
+                    <input type="checkbox" onChange={onSelectMember} checked={member.checked === undefined ? false : member.checked} />
+                    <MdDragIndicator className='drag-icon' />
+                    <span onClick={onStartEditing}>
+                        {isEditing ? <input
+                            type="text"
+                            autoFocus
+                            onChange={onEditMember}
+                            onBlur={() => setIsEditing(false)}
+                            value={member.name} /> : member.name
+                        }
+                    </span>
                 </div>
-                {nestedMember}
-            </li>
-        );
-    }
+                {isMouseOver && <MdDelete title="Delete" onClick={onDeleteMember} />}
+            </div>
+            {
+                !member.collapsed && member.children.length > 0 &&
+                (<TreeWrapper
+                    list={member.children}
+                    parent={member}
+                    filterText={filterText}
+                    onChildSelect={handleChildSelect}
+                    onChildDelete={handleChildDelete}
+                    onChildEdit={handleChildEdit}
+                    onReorder={handleReorder}
+                    onCollapse={handleCollapse}
+                />)
+            }
+        </li>
+    );
 }

@@ -1,35 +1,30 @@
-import React from 'react';
-import './SearchBar.css';
 import { BsChevronDown } from "react-icons/bs";
+import './SearchBar.css';
 
-export default class SearchBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onFilterTextChange = this.onFilterTextChange.bind(this);
-        this.onMasterCheckBoxChange = this.onMasterCheckBoxChange.bind(this);
-        this.onToggleList = this.onToggleList.bind(this);
+export default function SearchBar({
+    isMasterChecked,
+    onFilterTextChange,
+    onMasterCheckBoxChange,
+    isList2,
+    onToggleList
+}) {
+    function onTextChange(e) {
+        onFilterTextChange(e.target.value);
     }
 
-    onFilterTextChange(e) {
-        this.props.onFilterTextChange(e.target.value);
+    function onCheckBoxChange(e) {
+        onMasterCheckBoxChange(e.target.checked);
     }
 
-    onMasterCheckBoxChange(e) {
-        this.props.onMasterCheckBoxChange(e.target.checked);
+    function onToggle() {
+        onToggleList(!isList2);
     }
-
-    onToggleList() {
-        this.props.onToggleList(!this.props.isList2);
-    }
-
-    render() {
-        return (
-            <div className="search-bar-container">
-                <BsChevronDown className='icon'/>
-                <input type='checkbox' className='master-checkbox' onChange={this.onMasterCheckBoxChange} checked={this.props.isMasterChecked} />
-                <input className='search-bar' type='textbox' placeholder='Search...' onChange={this.onFilterTextChange} />
-                <button className='toggle-list-btn' onClick={this.onToggleList}>Toggle List</button>
-            </div>
-        );
-    }
+    return (
+        <div className="search-bar-container">
+            <BsChevronDown className='icon' />
+            <input type='checkbox' className='master-checkbox' onChange={onCheckBoxChange} checked={isMasterChecked} />
+            <input className='search-bar' type='textbox' placeholder='Search...' onChange={onTextChange} />
+            <button className='toggle-list-btn' onClick={onToggle}>Toggle List</button>
+        </div>
+    );
 }

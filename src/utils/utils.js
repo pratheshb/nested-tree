@@ -50,39 +50,4 @@ const mapFn = function(member, filterText, isMasterToggled, isMasterChecked) {
   }
 }
 
-const list = [
-    {
-      name: 'Country', children: [
-        {
-          name: 'India', children: [
-            {
-              name: 'Region', children: [
-                {
-                  name: 'Chennai', children: [
-                    {
-                      name: 'Area', children: [
-                        { name: 'OMR', children: [] },
-                        { name: 'ECR', children: [] },
-                      ]
-                    }
-                  ]
-                },
-                { name: 'Bangalore', children: [] },
-              ]
-            }
-          ]
-        },
-        { name: 'China', children: [] },
-        { name: 'Vietnam', children: [] },
-      ]
-    },
-    {
-      name: 'Expires on', children: [
-        { name: 'Jan', children: [] },
-        { name: 'Feb', children: [] },
-        { name: 'Mar', children: [] },
-      ]
-    },
-  ];
-
-export { isTreeMemberAvailable, mapFn, list };
+export { isTreeMemberAvailable, mapFn };

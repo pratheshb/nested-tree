@@ -1,101 +1,82 @@
-import React from 'react';
-import TreeMember from '../TreeMember/TreeMember';
-import './TreeWrapper.css';
-import { isTreeMemberAvailable } from '../../utils/utils';
 import { ReactSortable } from "react-sortablejs";
-export default class TreeWrapper extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleChildSelect = this.handleChildSelect.bind(this);
-        this.handleChildDelete = this.handleChildDelete.bind(this);
-        this.handleChildEdit = this.handleChildEdit.bind(this);
-        this.handleReorder = this.handleReorder.bind(this);
-        this.handleCollapse = this.handleCollapse.bind(this);
+import TreeMember from '../TreeMember/TreeMember';
+import { isTreeMemberAvailable } from '../../utils/utils';
+import './TreeWrapper.css';
+
+export default function TreeWrapper({
+    parent,
+    list,
+    filterText,
+    onChildSelect,
+    onChildDelete,
+    onChildEdit,
+    onReorder,
+    onCollapse
+}) {
+
+    function generateUpdatedList(index, member) {
+        return list.map((elm, i) => i === index ? member : elm);
     }
 
-    handleChildSelect(index, member) {
-        const list = this.props.list.map((elm, i) => {
-            return i === index ? member : elm;
-        });
-        this.props.onChildSelect(list);
+    function handleChildSelect(index, member) {
+        onChildSelect(generateUpdatedList(index, member));
     }
 
-    handleCollapse(index, member) {
-        const list = this.props.list.map((elm, i) => {
-            return i === index ? member : elm;
-        });
-        this.props.onChildSelect(list);
+    function handleCollapse(index, member) {
+        onCollapse(generateUpdatedList(index, member));
     }
 
-    handleChildDelete(index, member) {
-        let list;
+    function handleChildEdit(index, member) {
+        onChildEdit(generateUpdatedList(index, member));
+    }
+
+    function handleReorder(index, member) {
+        onReorder(generateUpdatedList(index, member));
+    }
+
+    function handleChildDelete(index, member) {
+        let updatedList;
         if (member.deleted) {
-            list = this.props.list.filter((_, i) => i !== index);
+            updatedList = list.filter((_, i) => i !== index);
         } else {
-            list = this.props.list.map((elm, i) => {
-                return i === index ? member : elm;
-            });
+            updatedList = generateUpdatedList(index, member);
         }
-        this.props.onChildDelete(list);
+        onChildDelete(updatedList);
     }
 
-    handleChildEdit(index, member) {
-        const list = this.props.list.map((elm, i) => {
-            return i === index ? member : elm;
-        });
-        this.props.onChildEdit(list);
-    }
-
-    handleReorder(index, member) {
-        const list = this.props.list.map((elm, i) => {
-            return i === index ? member : elm;
-        });
-        this.props.onReorder(list);
-    }
-
-    render() {
-        const { filterText, parent } = this.props;
-        const list = [
-            ...this.props.list
-        ];
-        const li = [];
-        let noResults = null;
-
-        list.forEach((elm, index) => {
-            const member = {
-                ...elm,
-                parent,
-            };
-            if (isTreeMemberAvailable(member, filterText)) {
-                li.push(
-                    <TreeMember
-                        key={index}
-                        member={member}
-                        index={index}
-                        filterText={filterText}
-                        onChildSelect={this.handleChildSelect}
-                        onChildDelete={this.handleChildDelete}
-                        onChildEdit={this.handleChildEdit}
-                        onReorder={this.handleReorder}
-                        onCollapse = {this.handleCollapse}
-                    />
-                );
-            }
-        });
-        if (parent === null && li.length === 0) {
-            noResults = <div className='no-items'>No items found!</div>;
+    const li = [];
+    list.forEach((elm, index) => {
+        const member = {
+            ...elm,
+            parent,
+        };
+        if (isTreeMemberAvailable(member, filterText)) {
+            li.push(
+                <TreeMember
+                    key={index}
+                    member={member}
+                    index={index}
+                    filterText={filterText}
+                    onChildSelect={handleChildSelect}
+                    onChildDelete={handleChildDelete}
+                    onChildEdit={handleChildEdit}
+                    onReorder={handleReorder}
+                    onCollapse={handleCollapse}
+                />
+            );
         }
-        return (
-            <>
-                <ReactSortable
-                    tag='ul'
-                    list={list}
-                    setList={(newState) => this.props.onReorder(newState)}
-                >
-                    {li}
-                </ReactSortable>
-                {noResults}
-            </>
-        );
-    }
+    });
+    return (
+        <>
+            <ReactSortable
+                tag='ul'
+                list={list}
+                setList={(newState) => onReorder(newState)}
+            >
+                {li}
+            </ReactSortable>
+            {parent === null && li.length === 0 && (
+                <div className='no-items'>No items found!</div>)}
+        </>
+    );
 }

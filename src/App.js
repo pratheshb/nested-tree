@@ -1,125 +1,93 @@
-import React from 'react';
-import './App.css';
+import { useEffect, useState } from 'react';
 import SearchBar from './components/SerchBar/SearchBar';
 import TreeWrapper from './components/TreeWrapper/TreeWrapper';
-import { isTreeMemberAvailable, mapFn, getData } from './utils/utils'
+import { isTreeMemberAvailable, mapFn } from './utils/utils';
+import './App.css';
 
-export default class App extends React.Component {
+export default function App() {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: [],
-      filterText: '',
-      isMasterChecked: false,
-      isList2: false
-    };
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-    this.handleMasterCheckBoxChange = this.handleMasterCheckBoxChange.bind(this);
-    this.handleChildSelect = this.handleChildSelect.bind(this);
-    this.handleChildDelete = this.handleChildDelete.bind(this);
-    this.handleChildEdit = this.handleChildEdit.bind(this);
-    this.handleReorder = this.handleReorder.bind(this);
-    this.handleCollapse = this.handleCollapse.bind(this);
-    this.fetchData = this.fetchData.bind(this);
-    this.onToggleList = this.onToggleList.bind(this);
-    this.fetchData();
+  const [list, setList] = useState([]);
+  const [filterText, setFilterText] = useState('');
+  const [isMasterChecked, setIsMasterChecked] = useState(false);
+  const [isList2, setIsList2] = useState(false);
+
+  useEffect(() => {
+    fetchData(isList2);
+  }, [isList2]);
+
+  async function fetchData(isList2) {
+    const url = isList2 ? '/list2.json' : '/list.json';
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      const list = json.list;
+      setList(list);
+    } catch(e) {
+      throw new Error(e);
+    }
   }
 
-  async fetchData(isList2) {
-    const url = isList2 ? '/list2.json' : '/list.json'
-    const res = await fetch(url);
-  const json = await res.json();
-  const list = json.list;
-    this.setState({
-      list,
-      isList2
-    });
+  function handleFilterTextChange(filterText) {
+    const filteredList = list.filter((member) => isTreeMemberAvailable(member, filterText));
+    setFilterText(filterText);
+    setIsMasterChecked(filteredList.length > 0 && filteredList.every(member => member.checked))
   }
 
-  handleFilterTextChange(filterText) {
-    this.setState(state => {
-      const filteredList = state.list.filter((member) => isTreeMemberAvailable(member, filterText));
-      return ({
-        filterText,
-        isMasterChecked: filteredList.length > 0 && filteredList.every(member => member.checked)
-      });
-    });
+  function handleMasterCheckBoxChange(isMasterChecked) {
+    setIsMasterChecked(isMasterChecked);
+    setList(list => [...list].map(member => mapFn(member, filterText, true, isMasterChecked)))
   }
 
-  handleMasterCheckBoxChange(isMasterChecked) {
-    this.setState((state) => {
-      const list = [...state.list];
-      return ({
-        list: list.map((member) => mapFn(member, state.filterText, true, isMasterChecked)),
-        isMasterChecked: isMasterChecked
-      });
-    });
+  function handleChildSelect(list) {
+    const filteredList = list.filter((member) => isTreeMemberAvailable(member, filterText));
+    setList([...list].map((member) => mapFn(member, filterText)));
+    setIsMasterChecked(filteredList.length > 0 && filteredList.every(child => child.checked));
   }
 
-  handleChildSelect(list) {
-    this.setState(state => {
-      const filteredList = list.filter((member) => isTreeMemberAvailable(member, state.filterText));
-      return ({
-        list: list.map((member) => mapFn(member, state.filterText)),
-        isMasterChecked: filteredList.length > 0 && filteredList.every(child => child.checked)
-      });
-    });
-  }
-
-  handleChildDelete(list) {
+  function handleChildDelete(list) {
     const existingList = list.filter(child => !child.deleted);
-    this.setState({
-      list: [...list],
-      isMasterChecked: existingList.length > 0 && existingList.every(child => child.checked),
-    });
+    setList([...list]);
+    setIsMasterChecked(existingList.length > 0 && existingList.every(child => child.checked));
   }
 
-  handleChildEdit(list) {
-    this.setState({
-      list: [...list],
-    });
+  function handleChildEdit(list) {
+    setList([...list]);
   }
 
-  handleCollapse(list) {
-    this.setState({
-      list: [...list],
-    });
+  function handleCollapse(list) {
+    setList([...list]);
   }
 
-  handleReorder(list) {
-    this.setState({
-      list: [...list],
-    });
+  function handleReorder(list) {
+    setList([...list]);
   }
 
-  onToggleList(isList2) {
-    this.fetchData(isList2);
+  function onToggleList(isList2) {
+    setIsList2(isList2);
   }
 
-
-  render() {
-    return (
-      <div className="container">
-        <SearchBar
-          isMasterChecked={this.state.isMasterChecked}
-          onFilterTextChange={this.handleFilterTextChange}
-          onMasterCheckBoxChange={this.handleMasterCheckBoxChange}
-          isList2 = {this.state.isList2}
-          onToggleList = {this.onToggleList}
+  return (
+    <div className="container">
+      <SearchBar
+        isMasterChecked={isMasterChecked}
+        onFilterTextChange={handleFilterTextChange}
+        onMasterCheckBoxChange={handleMasterCheckBoxChange}
+        isList2={isList2}
+        onToggleList={onToggleList}
+      />
+      <hr></hr>
+      <div className='tree-container'>
+        <TreeWrapper
+          parent={null}
+          list={list}
+          filterText={filterText}
+          onChildSelect={handleChildSelect}
+          onChildDelete={handleChildDelete}
+          onChildEdit={handleChildEdit}
+          onReorder={handleReorder}
+          onCollapse={handleCollapse}
         />
-        <hr></hr>
-        <div className='tree-container'>
-          <TreeWrapper
-            parent={null}
-            {...this.state}
-            onChildSelect={this.handleChildSelect}
-            onChildDelete={this.handleChildDelete}
-            onChildEdit={this.handleChildEdit}
-            onReorder={this.handleReorder}
-          />
-        </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
