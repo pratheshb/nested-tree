@@ -1,4 +1,4 @@
-import { BsChevronDown } from "react-icons/bs";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import './SearchBar.css';
 
 export default function SearchBar({
@@ -21,7 +21,7 @@ export default function SearchBar({
     }
     return (
         <div className="search-bar-container">
-            <BsChevronDown className='icon' />
+            <MdKeyboardArrowDown/>
             <input type='checkbox' className='master-checkbox' onChange={onCheckBoxChange} checked={isMasterChecked} />
             <input className='search-bar' type='textbox' placeholder='Search...' onChange={onTextChange} />
             <button className='toggle-list-btn' onClick={onToggle}>Toggle List</button>

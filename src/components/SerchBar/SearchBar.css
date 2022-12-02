@@ -8,7 +8,7 @@
 }
 
 .search-bar {
-    width: 75%;
+    flex-grow: 1;
     padding: 8px;
     border-radius: 2px;
     border: 1px solid #777;
@@ -16,7 +16,6 @@
 
 .toggle-list-btn {
     padding: 8px;
-    width: 142px;
     background-color: rgb(14, 139, 255);
     color: #fff;
     border: none;

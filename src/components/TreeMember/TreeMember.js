@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { BsChevronDown } from "react-icons/bs";
-import { MdDragIndicator, MdDelete } from "react-icons/md";
+import { MdDragIndicator, MdDelete, MdKeyboardArrowDown } from "react-icons/md";
 import TreeWrapper from '../TreeWrapper/TreeWrapper';
 import { isTreeMemberAvailable } from '../../utils/utils';
 import './TreeMember.css';
@@ -104,7 +103,7 @@ export default function TreeMember({
         <li>
             <div className='member-container' onMouseEnter={() => setIsMouseOver(true)} onMouseLeave={() => setIsMouseOver(false)}>
                 <div className='member'>
-                    <BsChevronDown style={expandIconStyle} onClick={onToggleCollapse} className='icon' />
+                    <MdKeyboardArrowDown style={expandIconStyle} onClick={onToggleCollapse}/>
                     <input type="checkbox" onChange={onSelectMember} checked={member.checked === undefined ? false : member.checked} />
                     <MdDragIndicator className='drag-icon' />
                     <span onClick={onStartEditing}>
