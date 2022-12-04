@@ -8,23 +8,23 @@ export default function SearchBar({
     isList2,
     onToggleList
 }) {
-    function onTextChange(e) {
+    function handleTextChange(e) {
         onFilterTextChange(e.target.value);
     }
 
-    function onCheckBoxChange(e) {
+    function handleSelectionChange(e) {
         onMasterCheckBoxChange(e.target.checked);
     }
 
-    function onToggle() {
+    function handleToggle() {
         onToggleList(!isList2);
     }
     return (
         <div className="search-bar-container">
             <MdKeyboardArrowDown/>
-            <input type='checkbox' className='master-checkbox' onChange={onCheckBoxChange} checked={isMasterChecked} />
-            <input className='search-bar' type='textbox' placeholder='Search...' onChange={onTextChange} />
-            <button className='toggle-list-btn' onClick={onToggle}>Toggle List</button>
+            <input type='checkbox' className='master-checkbox' onChange={handleSelectionChange} checked={isMasterChecked} />
+            <input className='search-bar' type='textbox' placeholder='Search...' onChange={handleTextChange} />
+            <button className='toggle-list-btn' onClick={handleToggle}>Toggle List</button>
         </div>
     );
 }
