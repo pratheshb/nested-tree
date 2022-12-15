@@ -2,17 +2,19 @@ import { ReactSortable } from "react-sortablejs";
 import TreeMember from '../TreeMember/TreeMember';
 import { isTreeMemberAvailable } from '../../utils/utils';
 import './TreeWrapper.css';
+import { useFilter } from "../../FilterContext";
 
 export default function TreeWrapper({
     parent,
     list,
-    filterText,
     onChildSelect,
     onChildDelete,
     onChildEdit,
     onReorder,
     onCollapse
 }) {
+
+    const filterText = useFilter();
 
     function generateUpdatedList(index, member) {
         return list.map((elm, i) => i === index ? member : elm);
@@ -56,7 +58,6 @@ export default function TreeWrapper({
                     key={index}
                     member={member}
                     index={index}
-                    filterText={filterText}
                     onChildSelect={handleChildSelect}
                     onChildDelete={handleChildDelete}
                     onChildEdit={handleChildEdit}

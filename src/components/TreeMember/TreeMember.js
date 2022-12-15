@@ -3,17 +3,19 @@ import { MdDragIndicator, MdDelete, MdKeyboardArrowDown } from "react-icons/md";
 import TreeWrapper from '../TreeWrapper/TreeWrapper';
 import { isTreeMemberAvailable } from '../../utils/utils';
 import './TreeMember.css';
+import { useFilter } from '../../FilterContext';
 
 export default function TreeMember({
     member,
     index,
-    filterText,
     onChildSelect,
     onChildDelete,
     onChildEdit,
     onReorder,
     onCollapse,
 }) {
+
+    const filterText = useFilter();
     const [isEditing, setIsEditing] = useState(false);
     const [isMouseOver, setIsMouseOver] = useState(false);
 
@@ -123,7 +125,6 @@ export default function TreeMember({
                 (<TreeWrapper
                     list={member.children}
                     parent={member}
-                    filterText={filterText}
                     onChildSelect={handleChildSelect}
                     onChildDelete={handleChildDelete}
                     onChildEdit={handleChildEdit}
