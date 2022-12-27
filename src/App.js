@@ -6,13 +6,13 @@ import { isTreeMemberAvailable, mapFn } from './utils/utils';
 import './App.css';
 
 export default function App() {
-  const [list, setList] = useState(initialList);
+  const [list, setList] = useState([]);
   const [filterText, setFilterText] = useState('');
   const [isMasterChecked, setIsMasterChecked] = useState(false);
   const [isList2, setIsList2] = useState(false);
 
   useEffect(() => {
-    // fetchData(isList2);
+    fetchData(isList2);
   }, [isList2]);
 
   async function fetchData(isList2) {
@@ -77,7 +77,7 @@ export default function App() {
       <hr></hr>
       <div className='tree-container'>
         <FilterContext.Provider value={filterText}>
-          {/* <TreeWrapper
+          <TreeWrapper
             parent={null}
             list={list}
             onChildSelect={handleChildSelect}
@@ -85,50 +85,9 @@ export default function App() {
             onChildEdit={handleChildEdit}
             onReorder={handleReorder}
             onCollapse={handleCollapse}
-          /> */}
-          <ul>
-            {list.root.children.map(item => <li>{list[item].name}</li>)}
-          </ul>
+          />
         </FilterContext.Provider>
       </div>
     </div>
   );
-}
-
-
-const initialList = {
-  root: {
-      name: 'Root',
-      children: ['country', 'expires']
-  },
-  country: {
-      parent: 'Root',
-      name: 'Country',
-      children: ['india', 'china']
-  },
-  india: {
-      parent: 'country',
-      name: 'India',
-      children: []
-  },
-  china: {
-      name: 'China',
-      children: []
-  },
-  expires: {
-      name: 'Expires on',
-      children: ['jan', 'feb', 'mar']
-  },
-  jan: {
-      name: 'January',
-      children: []
-  },
-  feb: {
-      name: 'Feb',
-      children: []
-  },
-  mar: {
-      name: 'mar',
-      children: []
-  }
 }
